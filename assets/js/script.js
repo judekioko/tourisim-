@@ -1,16 +1,61 @@
-import { auth, db } from './firebase-config.js';
-import {
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    onAuthStateChanged,
-    signOut,
-    updateProfile
-} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
-import {
-    collection,
-    addDoc,
-    serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+// ===== API CLIENT (talks to the Django backend - see the safaris-api repo) =====
+const AUTH_STORAGE_KEY = 'safariAuth';
+
+function getStoredAuth() {
+    try {
+        const raw = localStorage.getItem(AUTH_STORAGE_KEY);
+        return raw ? JSON.parse(raw) : null;
+    } catch {
+        return null;
+    }
+}
+
+function setStoredAuth(auth) {
+    if (auth) {
+        localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(auth));
+    } else {
+        localStorage.removeItem(AUTH_STORAGE_KEY);
+    }
+}
+
+function extractErrorMessage(data) {
+    if (!data) return null;
+    if (data.detail) return data.detail;
+    const firstKey = Object.keys(data)[0];
+    if (!firstKey) return null;
+    const value = data[firstKey];
+    return Array.isArray(value) ? value[0] : String(value);
+}
+
+async function apiRequest(path, { method = 'GET', body, auth: useAuth = false } = {}) {
+    const headers = { 'Content-Type': 'application/json' };
+    if (useAuth) {
+        const stored = getStoredAuth();
+        if (stored && stored.access) headers['Authorization'] = `Bearer ${stored.access}`;
+    }
+
+    const response = await fetch(`${API_BASE}${path}`, {
+        method,
+        headers,
+        body: body !== undefined ? JSON.stringify(body) : undefined,
+    });
+
+    let data = null;
+    try {
+        data = await response.json();
+    } catch {
+        // No JSON body (e.g. empty response) - leave data as null.
+    }
+
+    if (!response.ok) {
+        const error = new Error(extractErrorMessage(data) || `Request failed (${response.status})`);
+        error.status = response.status;
+        error.data = data;
+        throw error;
+    }
+
+    return data;
+}
 
 // ===== KENYA SAFARI PACKAGES DATA =====
 const packages = [
@@ -206,7 +251,7 @@ function initializePage() {
     setupAccountModal();
     setupPriceCalculation();
     setMinDate();
-    setupAuthUI();
+    initAuthState();
 }
 
 // ===== RENDER PACKAGES =====
@@ -335,25 +380,23 @@ function submitBooking(event) {
     event.preventDefault();
 
     const submitBtn = event.target.querySelector('button[type="submit"]');
-    const formData = {
+    const payload = {
         package: document.getElementById('packageSelect').options[document.getElementById('packageSelect').selectedIndex].text,
-        startDate: document.getElementById('startDate').value,
-        endDate: document.getElementById('endDate').value,
-        numTourists: document.getElementById('numTourists').value,
-        pickupCity: document.getElementById('pickupCity').value,
-        visitType: document.getElementById('visitType').value,
-        hotelPickup: document.getElementById('hotelPickup').checked,
+        start_date: document.getElementById('startDate').value,
+        end_date: document.getElementById('endDate').value,
+        num_tourists: parseInt(document.getElementById('numTourists').value, 10) || 1,
+        pickup_city: document.getElementById('pickupCity').value,
+        visit_type: document.getElementById('visitType').value,
+        hotel_pickup: document.getElementById('hotelPickup').checked,
         extras: Array.from(document.querySelectorAll('input[name="extras"]:checked')).map(cb => cb.value),
-        fullName: document.getElementById('fullName').value,
+        full_name: document.getElementById('fullName').value,
         email: document.getElementById('email').value,
         phone: document.getElementById('phone').value,
-        totalPrice: document.getElementById('totalPrice').textContent,
-        uid: auth.currentUser ? auth.currentUser.uid : null,
-        createdAt: serverTimestamp()
+        total_price: document.getElementById('totalPrice').textContent,
     };
 
     submitBtn.disabled = true;
-    addDoc(collection(db, 'bookings'), formData)
+    apiRequest('/bookings/', { method: 'POST', body: payload, auth: true })
         .then(() => {
             showNotification('🎉 Booking submitted! Our team will reach out to confirm details and payment.', 'success');
             event.target.reset();
@@ -482,16 +525,15 @@ function submitContact(event) {
     event.preventDefault();
 
     const submitBtn = event.target.querySelector('button[type="submit"]');
-    const messageData = {
+    const payload = {
         name: document.getElementById('contactName').value,
         email: document.getElementById('contactEmail').value,
         subject: document.getElementById('contactSubject').value,
         message: document.getElementById('contactMessage').value,
-        createdAt: serverTimestamp()
     };
 
     submitBtn.disabled = true;
-    addDoc(collection(db, 'messages'), messageData)
+    apiRequest('/messages/', { method: 'POST', body: payload })
         .then(() => {
             showNotification('✉️ Message sent! Our team will contact you within 24 hours.', 'success');
             event.target.reset();
@@ -566,14 +608,22 @@ function submitLogin(event) {
     const submitBtn = event.target.querySelector('button[type="submit"]');
 
     submitBtn.disabled = true;
-    signInWithEmailAndPassword(auth, email, password)
-        .then(() => {
+    apiRequest('/auth/login/', { method: 'POST', body: { username: email, password } })
+        .then((tokens) => {
+            setStoredAuth({ access: tokens.access, refresh: tokens.refresh, user: null });
+            return apiRequest('/auth/me/', { auth: true });
+        })
+        .then((user) => {
+            setStoredAuth({ ...getStoredAuth(), user });
+            updateAuthUI();
             showNotification('🔓 Login successful! Welcome back to Safaris Best Choice Kenya!', 'success');
             event.target.reset();
             closeModal();
         })
         .catch((error) => {
-            showNotification(`⚠️ ${friendlyAuthError(error)}`, 'error');
+            setStoredAuth(null);
+            const message = error.status === 401 ? 'Incorrect email or password.' : error.message;
+            showNotification(`⚠️ ${message}`, 'error');
         })
         .finally(() => {
             submitBtn.disabled = false;
@@ -596,15 +646,16 @@ function submitRegister(event) {
     }
 
     submitBtn.disabled = true;
-    createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => updateProfile(userCredential.user, { displayName: fullName }))
-        .then(() => {
+    apiRequest('/auth/register/', { method: 'POST', body: { email, password, full_name: fullName } })
+        .then((data) => {
+            setStoredAuth({ access: data.access, refresh: data.refresh, user: data.user });
+            updateAuthUI();
             showNotification('🎉 Account created successfully! Ready for your Kenya adventure?', 'success');
             event.target.reset();
             closeModal();
         })
         .catch((error) => {
-            showNotification(`⚠️ ${friendlyAuthError(error)}`, 'error');
+            showNotification(`⚠️ ${error.message}`, 'error');
         })
         .finally(() => {
             submitBtn.disabled = false;
@@ -612,61 +663,68 @@ function submitRegister(event) {
 }
 
 // ===== AUTH STATE / ACCOUNT UI =====
-function setupAuthUI() {
-    onAuthStateChanged(auth, (user) => {
-        const accountLink = document.querySelector('.account-link');
-        const tabsHeader = document.querySelector('.account-tabs');
-        const loginTab = document.getElementById('loginTab');
-        const registerTab = document.getElementById('registerTab');
-        const modalContent = document.querySelector('#accountModal .modal-content');
-        let loggedInPanel = document.getElementById('loggedInPanel');
-
-        if (user) {
-            accountLink.innerHTML = `<i class="fas fa-user-check"></i> ${user.displayName || 'My Account'}`;
-            tabsHeader.style.display = 'none';
-            loginTab.style.display = 'none';
-            registerTab.style.display = 'none';
-
-            if (!loggedInPanel) {
-                loggedInPanel = document.createElement('div');
-                loggedInPanel.id = 'loggedInPanel';
-                modalContent.appendChild(loggedInPanel);
-            }
-            loggedInPanel.style.display = 'block';
-            loggedInPanel.innerHTML = `
-                <p>Welcome back, <strong>${user.displayName || user.email}</strong>!</p>
-                <p>${user.email}</p>
-                <button class="btn btn-primary" id="logoutBtn">Logout</button>
-            `;
-            document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
-
-            // Prefill the booking form for signed-in guests
-            const fullNameField = document.getElementById('fullName');
-            const emailField = document.getElementById('email');
-            if (fullNameField && !fullNameField.value) fullNameField.value = user.displayName || '';
-            if (emailField && !emailField.value) emailField.value = user.email || '';
-        } else {
-            accountLink.innerHTML = `<i class="fas fa-user"></i> Account`;
-            tabsHeader.style.display = 'flex';
-            loginTab.style.display = '';
-            registerTab.style.display = '';
-            if (loggedInPanel) loggedInPanel.style.display = 'none';
-        }
-    });
+function initAuthState() {
+    const stored = getStoredAuth();
+    if (stored && stored.access) {
+        apiRequest('/auth/me/', { auth: true })
+            .then((user) => {
+                setStoredAuth({ ...stored, user });
+                updateAuthUI();
+            })
+            .catch(() => {
+                // Stored token is invalid/expired - drop it and show the logged-out state.
+                setStoredAuth(null);
+                updateAuthUI();
+            });
+    } else {
+        updateAuthUI();
+    }
 }
 
-// ===== FRIENDLY FIREBASE AUTH ERROR MESSAGES =====
-function friendlyAuthError(error) {
-    const messages = {
-        'auth/email-already-in-use': 'An account with this email already exists. Try logging in instead.',
-        'auth/invalid-email': 'Please enter a valid email address.',
-        'auth/weak-password': 'Password should be at least 6 characters.',
-        'auth/user-not-found': 'No account found with this email.',
-        'auth/wrong-password': 'Incorrect password. Please try again.',
-        'auth/invalid-credential': 'Incorrect email or password.',
-        'auth/too-many-requests': 'Too many attempts. Please wait a moment and try again.'
-    };
-    return messages[error.code] || 'Something went wrong. Please try again.';
+function updateAuthUI() {
+    const stored = getStoredAuth();
+    const user = stored ? stored.user : null;
+    const accountLink = document.querySelector('.account-link');
+    const tabsHeader = document.querySelector('.account-tabs');
+    const loginTab = document.getElementById('loginTab');
+    const registerTab = document.getElementById('registerTab');
+    const modalContent = document.querySelector('#accountModal .modal-content');
+    let loggedInPanel = document.getElementById('loggedInPanel');
+
+    if (user) {
+        accountLink.innerHTML = `<i class="fas fa-user-check"></i> ${user.first_name || 'My Account'}`;
+        tabsHeader.style.display = 'none';
+        loginTab.style.display = 'none';
+        registerTab.style.display = 'none';
+
+        if (!loggedInPanel) {
+            loggedInPanel = document.createElement('div');
+            loggedInPanel.id = 'loggedInPanel';
+            modalContent.appendChild(loggedInPanel);
+        }
+        loggedInPanel.style.display = 'block';
+        loggedInPanel.innerHTML = `
+            <p>Welcome back, <strong>${user.first_name || user.email}</strong>!</p>
+            <p>${user.email}</p>
+            <button class="btn btn-primary" id="logoutBtn">Logout</button>
+        `;
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            setStoredAuth(null);
+            updateAuthUI();
+        });
+
+        // Prefill the booking form for signed-in guests
+        const fullNameField = document.getElementById('fullName');
+        const emailField = document.getElementById('email');
+        if (fullNameField && !fullNameField.value) fullNameField.value = user.first_name || '';
+        if (emailField && !emailField.value) emailField.value = user.email || '';
+    } else {
+        accountLink.innerHTML = `<i class="fas fa-user"></i> Account`;
+        tabsHeader.style.display = 'flex';
+        loginTab.style.display = '';
+        registerTab.style.display = '';
+        if (loggedInPanel) loggedInPanel.style.display = 'none';
+    }
 }
 
 // ===== SHOW NOTIFICATION =====
@@ -740,18 +798,3 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
-
-// ===== EXPOSE FUNCTIONS FOR INLINE HTML EVENT HANDLERS =====
-// This file is loaded as an ES module (needed for the Firebase imports above),
-// so top-level functions are module-scoped, not global. The HTML uses inline
-// onclick/onchange/onsubmit attributes, which only see the global (window) scope.
-window.scrollToSection = scrollToSection;
-window.filterPackages = filterPackages;
-window.selectPackage = selectPackage;
-window.updatePackagePrice = updatePackagePrice;
-window.submitBooking = submitBooking;
-window.submitContact = submitContact;
-window.closeModal = closeModal;
-window.switchTab = switchTab;
-window.submitLogin = submitLogin;
-window.submitRegister = submitRegister;
