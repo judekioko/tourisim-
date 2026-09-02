@@ -22,6 +22,7 @@
                 <li><a href="#destinations" onclick="scrollToSection('destinations')">Destinations</a></li>
                 <li><a href="#packages" onclick="scrollToSection('packages')">Packages</a></li>
                 <li><a href="#culture" onclick="scrollToSection('culture')">Kenya Culture</a></li>
+                <li><a href="#essentials" onclick="scrollToSection('essentials')">Travel Info</a></li>
                 <li><a href="#booking" onclick="scrollToSection('booking')">Book Now</a></li>
                 <li><a href="#contact" onclick="scrollToSection('contact')">Contact</a></li>
                 <li><a href="#account" class="account-link"><i class="fas fa-user"></i> Account</a></li>
@@ -200,6 +201,63 @@
         </div>
     </section>
 
+    <!-- TRAVEL ESSENTIALS / FAQ SECTION -->
+    <section class="essentials" id="essentials">
+        <div class="container">
+            <h2>Plan Your Kenya Trip</h2>
+
+            <h3 class="essentials-subtitle">🗓️ Best Time to Visit</h3>
+            <div class="season-grid">
+                <div class="season-card">
+                    <div class="season-icon">☀️</div>
+                    <h4>Dry Season</h4>
+                    <span class="season-months">June – October</span>
+                    <p>Peak wildlife viewing and the famous Mara River crossings during the Great Migration. Little rain, cooler nights, and the busiest season.</p>
+                </div>
+                <div class="season-card">
+                    <div class="season-icon">🌱</div>
+                    <h4>Green Season</h4>
+                    <span class="season-months">November – March</span>
+                    <p>Lush scenery, calving season in January–February, spectacular birdlife, fewer crowds, and lower lodge rates.</p>
+                </div>
+                <div class="season-card">
+                    <div class="season-icon">🌧️</div>
+                    <h4>Long Rains</h4>
+                    <span class="season-months">April – May</span>
+                    <p>Heaviest rainfall of the year. Some camps close for maintenance. Lowest prices for travelers who don't mind the odd shower.</p>
+                </div>
+            </div>
+
+            <h3 class="essentials-subtitle">❓ Frequently Asked Questions</h3>
+            <div class="faq-list">
+                <details class="faq-item">
+                    <summary>Do I need a visa to visit Kenya?</summary>
+                    <p>Most visitors need to apply for an Electronic Travel Authorisation (eTA) online before arrival. Requirements vary by nationality, so check Kenya's official immigration portal well before your trip.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>What vaccinations do I need?</summary>
+                    <p>A yellow fever certificate is required if you're arriving from a country with risk of yellow fever transmission. Malaria prophylaxis is strongly recommended, and routine vaccinations should be up to date. Consult a travel clinic before departure.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>What currency is used, and can I pay by card?</summary>
+                    <p>The Kenyan Shilling (KES) is the local currency. Most hotels and lodges accept major credit cards, and M-Pesa mobile money is widely used. It's a good idea to carry some cash for tips, markets, and rural areas.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>What should I pack for a safari?</summary>
+                    <p>Neutral-colored, breathable clothing, a warm layer for chilly early-morning game drives, a wide-brim hat, sunscreen, binoculars, insect repellent, and comfortable closed-toe shoes.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Is Kenya safe for tourists?</summary>
+                    <p>Kenya's national parks and tourist areas are well patrolled and welcome millions of visitors every year. As with any destination, follow your guide's instructions, avoid isolated areas after dark, and take standard travel precautions.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Should I tip my guide?</summary>
+                    <p>Tipping is customary and appreciated. A general guideline is $10–20 USD per day for your driver-guide, adjusted for group size and service quality.</p>
+                </details>
+            </div>
+        </div>
+    </section>
+
     <!-- SERVICES OVERVIEW -->
     <section class="services">
         <div class="container">
@@ -256,12 +314,12 @@
         <div class="container">
             <h2>Safari Packages for Everyone</h2>
             <div class="filter-buttons">
-                <button class="filter-btn active" onclick="filterPackages('all')">All</button>
-                <button class="filter-btn" onclick="filterPackages('family')">Family</button>
-                <button class="filter-btn" onclick="filterPackages('adventure')">Adventure</button>
-                <button class="filter-btn" onclick="filterPackages('photography')">Photography</button>
-                <button class="filter-btn" onclick="filterPackages('luxury')">Luxury</button>
-                <button class="filter-btn" onclick="filterPackages('cultural')">Cultural</button>
+                <button class="filter-btn active" onclick="filterPackages('all', this)">All</button>
+                <button class="filter-btn" onclick="filterPackages('family', this)">Family</button>
+                <button class="filter-btn" onclick="filterPackages('adventure', this)">Adventure</button>
+                <button class="filter-btn" onclick="filterPackages('photography', this)">Photography</button>
+                <button class="filter-btn" onclick="filterPackages('luxury', this)">Luxury</button>
+                <button class="filter-btn" onclick="filterPackages('cultural', this)">Cultural</button>
             </div>
 
             <div class="packages-grid" id="packagesGrid">
@@ -403,16 +461,16 @@
                 <div class="contact-form">
                     <form id="contactForm" onsubmit="submitContact(event)">
                         <div class="form-group">
-                            <input type="text" placeholder="Your Name" required>
+                            <input type="text" id="contactName" placeholder="Your Name" required>
                         </div>
                         <div class="form-group">
-                            <input type="email" placeholder="Your Email" required>
+                            <input type="email" id="contactEmail" placeholder="Your Email" required>
                         </div>
                         <div class="form-group">
-                            <input type="text" placeholder="Subject" required>
+                            <input type="text" id="contactSubject" placeholder="Subject" required>
                         </div>
                         <div class="form-group">
-                            <textarea placeholder="Your Message" rows="5" required></textarea>
+                            <textarea id="contactMessage" placeholder="Your Message" rows="5" required></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary">Send Message</button>
                     </form>
@@ -451,17 +509,17 @@
             <span class="close" onclick="closeModal()">&times;</span>
             <h2>My Safari Account</h2>
             <div class="account-tabs">
-                <button class="tab-btn active" onclick="switchTab('login')">Login</button>
-                <button class="tab-btn" onclick="switchTab('register')">Register</button>
+                <button class="tab-btn active" onclick="switchTab('login', this)">Login</button>
+                <button class="tab-btn" onclick="switchTab('register', this)">Register</button>
             </div>
 
             <div id="loginTab" class="tab-content active">
                 <form onsubmit="submitLogin(event)">
                     <div class="form-group">
-                        <input type="email" placeholder="Email Address" required>
+                        <input type="email" id="loginEmail" placeholder="Email Address" required>
                     </div>
                     <div class="form-group">
-                        <input type="password" placeholder="Password" required>
+                        <input type="password" id="loginPassword" placeholder="Password" required>
                     </div>
                     <button type="submit" class="btn btn-primary">Login</button>
                 </form>
@@ -470,19 +528,19 @@
             <div id="registerTab" class="tab-content">
                 <form onsubmit="submitRegister(event)">
                     <div class="form-group">
-                        <input type="text" placeholder="Full Name" required>
+                        <input type="text" id="registerName" placeholder="Full Name" required>
                     </div>
                     <div class="form-group">
-                        <input type="email" placeholder="Email Address" required>
+                        <input type="email" id="registerEmail" placeholder="Email Address" required>
                     </div>
                     <div class="form-group">
-                        <input type="tel" placeholder="Phone Number (Optional)">
+                        <input type="tel" id="registerPhone" placeholder="Phone Number (Optional)">
                     </div>
                     <div class="form-group">
-                        <input type="password" placeholder="Password (min 6 characters)" required minlength="6">
+                        <input type="password" id="registerPassword" placeholder="Password (min 6 characters)" required minlength="6">
                     </div>
                     <div class="form-group">
-                        <input type="password" placeholder="Confirm Password" required>
+                        <input type="password" id="registerConfirmPassword" placeholder="Confirm Password" required>
                     </div>
                     <label><input type="checkbox" required> I agree to Terms & Conditions</label>
                     <button type="submit" class="btn btn-primary">Create Account</button>
@@ -530,6 +588,6 @@
         </div>
     </footer>
 
-    <script src="assets/js/script.js"></script>
+    <script type="module" src="assets/js/script.js"></script>
 </body>
 </html>

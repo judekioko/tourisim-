@@ -1,3 +1,17 @@
+import { auth, db } from './firebase-config.js';
+import {
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    onAuthStateChanged,
+    signOut,
+    updateProfile
+} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+import {
+    collection,
+    addDoc,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+
 // ===== KENYA SAFARI PACKAGES DATA =====
 const packages = [
     {
@@ -192,6 +206,7 @@ function initializePage() {
     setupAccountModal();
     setupPriceCalculation();
     setMinDate();
+    setupAuthUI();
 }
 
 // ===== RENDER PACKAGES =====
@@ -229,11 +244,11 @@ function renderPackages(category) {
 }
 
 // ===== FILTER PACKAGES =====
-function filterPackages(category) {
+function filterPackages(category, btnEl) {
     document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.classList.remove('active');
     });
-    event.target.classList.add('active');
+    if (btnEl) btnEl.classList.add('active');
     renderPackages(category);
 }
 
@@ -319,6 +334,7 @@ function setupPriceCalculation() {
 function submitBooking(event) {
     event.preventDefault();
 
+    const submitBtn = event.target.querySelector('button[type="submit"]');
     const formData = {
         package: document.getElementById('packageSelect').options[document.getElementById('packageSelect').selectedIndex].text,
         startDate: document.getElementById('startDate').value,
@@ -326,20 +342,30 @@ function submitBooking(event) {
         numTourists: document.getElementById('numTourists').value,
         pickupCity: document.getElementById('pickupCity').value,
         visitType: document.getElementById('visitType').value,
+        hotelPickup: document.getElementById('hotelPickup').checked,
+        extras: Array.from(document.querySelectorAll('input[name="extras"]:checked')).map(cb => cb.value),
         fullName: document.getElementById('fullName').value,
         email: document.getElementById('email').value,
         phone: document.getElementById('phone').value,
         totalPrice: document.getElementById('totalPrice').textContent,
-        timestamp: new Date().toLocaleString()
+        uid: auth.currentUser ? auth.currentUser.uid : null,
+        createdAt: serverTimestamp()
     };
 
-    showNotification('🎉 Booking submitted successfully! Redirecting to payment gateway...', 'success');
-    localStorage.setItem('lastBooking', JSON.stringify(formData));
-
-    setTimeout(() => {
-        document.getElementById('bookingForm').reset();
-        calculateTotal();
-    }, 2000);
+    submitBtn.disabled = true;
+    addDoc(collection(db, 'bookings'), formData)
+        .then(() => {
+            showNotification('🎉 Booking submitted! Our team will reach out to confirm details and payment.', 'success');
+            event.target.reset();
+            calculateTotal();
+        })
+        .catch((error) => {
+            console.error('Booking submission failed:', error);
+            showNotification('⚠️ Could not submit your booking. Please check your connection and try again.', 'error');
+        })
+        .finally(() => {
+            submitBtn.disabled = false;
+        });
 }
 
 // ===== RENDER GALLERY =====
@@ -454,8 +480,29 @@ function renderReviews() {
 // ===== SUBMIT CONTACT FORM =====
 function submitContact(event) {
     event.preventDefault();
-    showNotification('✉️ Message sent! Our team will contact you within 24 hours.', 'success');
-    document.getElementById('contactForm').reset();
+
+    const submitBtn = event.target.querySelector('button[type="submit"]');
+    const messageData = {
+        name: document.getElementById('contactName').value,
+        email: document.getElementById('contactEmail').value,
+        subject: document.getElementById('contactSubject').value,
+        message: document.getElementById('contactMessage').value,
+        createdAt: serverTimestamp()
+    };
+
+    submitBtn.disabled = true;
+    addDoc(collection(db, 'messages'), messageData)
+        .then(() => {
+            showNotification('✉️ Message sent! Our team will contact you within 24 hours.', 'success');
+            event.target.reset();
+        })
+        .catch((error) => {
+            console.error('Contact submission failed:', error);
+            showNotification('⚠️ Could not send your message. Please try again later.', 'error');
+        })
+        .finally(() => {
+            submitBtn.disabled = false;
+        });
 }
 
 // ===== SCROLL TO SECTION =====
@@ -498,7 +545,7 @@ function closeModal() {
 }
 
 // ===== SWITCH TABS =====
-function switchTab(tabName) {
+function switchTab(tabName, btnEl) {
     document.querySelectorAll('.tab-content').forEach(tab => {
         tab.classList.remove('active');
     });
@@ -507,21 +554,119 @@ function switchTab(tabName) {
     });
 
     document.getElementById(`${tabName}Tab`).classList.add('active');
-    event.target.classList.add('active');
+    if (btnEl) btnEl.classList.add('active');
 }
 
 // ===== SUBMIT LOGIN =====
 function submitLogin(event) {
     event.preventDefault();
-    showNotification('🔓 Login successful! Welcome back to Safaris Best Choice Kenya!', 'success');
-    closeModal();
+
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    const submitBtn = event.target.querySelector('button[type="submit"]');
+
+    submitBtn.disabled = true;
+    signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+            showNotification('🔓 Login successful! Welcome back to Safaris Best Choice Kenya!', 'success');
+            event.target.reset();
+            closeModal();
+        })
+        .catch((error) => {
+            showNotification(`⚠️ ${friendlyAuthError(error)}`, 'error');
+        })
+        .finally(() => {
+            submitBtn.disabled = false;
+        });
 }
 
 // ===== SUBMIT REGISTER =====
 function submitRegister(event) {
     event.preventDefault();
-    showNotification('🎉 Account created successfully! Ready for your Kenya adventure?', 'success');
-    closeModal();
+
+    const fullName = document.getElementById('registerName').value;
+    const email = document.getElementById('registerEmail').value;
+    const password = document.getElementById('registerPassword').value;
+    const confirmPassword = document.getElementById('registerConfirmPassword').value;
+    const submitBtn = event.target.querySelector('button[type="submit"]');
+
+    if (password !== confirmPassword) {
+        showNotification('⚠️ Passwords do not match.', 'error');
+        return;
+    }
+
+    submitBtn.disabled = true;
+    createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => updateProfile(userCredential.user, { displayName: fullName }))
+        .then(() => {
+            showNotification('🎉 Account created successfully! Ready for your Kenya adventure?', 'success');
+            event.target.reset();
+            closeModal();
+        })
+        .catch((error) => {
+            showNotification(`⚠️ ${friendlyAuthError(error)}`, 'error');
+        })
+        .finally(() => {
+            submitBtn.disabled = false;
+        });
+}
+
+// ===== AUTH STATE / ACCOUNT UI =====
+function setupAuthUI() {
+    onAuthStateChanged(auth, (user) => {
+        const accountLink = document.querySelector('.account-link');
+        const tabsHeader = document.querySelector('.account-tabs');
+        const loginTab = document.getElementById('loginTab');
+        const registerTab = document.getElementById('registerTab');
+        const modalContent = document.querySelector('#accountModal .modal-content');
+        let loggedInPanel = document.getElementById('loggedInPanel');
+
+        if (user) {
+            accountLink.innerHTML = `<i class="fas fa-user-check"></i> ${user.displayName || 'My Account'}`;
+            tabsHeader.style.display = 'none';
+            loginTab.style.display = 'none';
+            registerTab.style.display = 'none';
+
+            if (!loggedInPanel) {
+                loggedInPanel = document.createElement('div');
+                loggedInPanel.id = 'loggedInPanel';
+                modalContent.appendChild(loggedInPanel);
+            }
+            loggedInPanel.style.display = 'block';
+            loggedInPanel.innerHTML = `
+                <p>Welcome back, <strong>${user.displayName || user.email}</strong>!</p>
+                <p>${user.email}</p>
+                <button class="btn btn-primary" id="logoutBtn">Logout</button>
+            `;
+            document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
+
+            // Prefill the booking form for signed-in guests
+            const fullNameField = document.getElementById('fullName');
+            const emailField = document.getElementById('email');
+            if (fullNameField && !fullNameField.value) fullNameField.value = user.displayName || '';
+            if (emailField && !emailField.value) emailField.value = user.email || '';
+        } else {
+            accountLink.innerHTML = `<i class="fas fa-user"></i> Account`;
+            tabsHeader.style.display = 'flex';
+            loginTab.style.display = '';
+            registerTab.style.display = '';
+            if (loggedInPanel) loggedInPanel.style.display = 'none';
+        }
+    });
+}
+
+// ===== FRIENDLY FIREBASE AUTH ERROR MESSAGES =====
+function friendlyAuthError(error) {
+    const messages = {
+        'auth/email-already-in-use': 'An account with this email already exists. Try logging in instead.',
+        'auth/invalid-email': 'Please enter a valid email address.',
+        'auth/weak-password': 'Password should be at least 6 characters.',
+        'auth/user-not-found': 'No account found with this email.',
+        'auth/wrong-password': 'Incorrect password. Please try again.',
+        'auth/invalid-credential': 'Incorrect email or password.',
+        'auth/too-many-requests': 'Too many attempts. Please wait a moment and try again.'
+    };
+    return messages[error.code] || 'Something went wrong. Please try again.';
 }
 
 // ===== SHOW NOTIFICATION =====
@@ -595,3 +740,18 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+// ===== EXPOSE FUNCTIONS FOR INLINE HTML EVENT HANDLERS =====
+// This file is loaded as an ES module (needed for the Firebase imports above),
+// so top-level functions are module-scoped, not global. The HTML uses inline
+// onclick/onchange/onsubmit attributes, which only see the global (window) scope.
+window.scrollToSection = scrollToSection;
+window.filterPackages = filterPackages;
+window.selectPackage = selectPackage;
+window.updatePackagePrice = updatePackagePrice;
+window.submitBooking = submitBooking;
+window.submitContact = submitContact;
+window.closeModal = closeModal;
+window.switchTab = switchTab;
+window.submitLogin = submitLogin;
+window.submitRegister = submitRegister;
