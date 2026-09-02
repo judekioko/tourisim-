@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safaris Best Choice - Authentic Kenya Safari Adventures</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+    <!-- NAVIGATION -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-lion"></i>
+                <span>Safaris Best Choice Kenya</span>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home" onclick="scrollToSection('home')">Home</a></li>
+                <li><a href="#experiences" onclick="scrollToSection('experiences')">Experiences</a></li>
+                <li><a href="#destinations" onclick="scrollToSection('destinations')">Destinations</a></li>
+                <li><a href="#packages" onclick="scrollToSection('packages')">Packages</a></li>
+                <li><a href="#culture" onclick="scrollToSection('culture')">Kenya Culture</a></li>
+                <li><a href="#booking" onclick="scrollToSection('booking')">Book Now</a></li>
+                <li><a href="#contact" onclick="scrollToSection('contact')">Contact</a></li>
+                <li><a href="#account" class="account-link"><i class="fas fa-user"></i> Account</a></li>
+            </ul>
+            <div class="toggle-btn" id="toggleBtn">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero" id="home">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="animate__animated animate__fadeInDown">🦁 Welcome to Kenya's Wild Heart 🌍</h1>
+            <p class="animate__animated animate__fadeInUp">Discover the Magic of Africa - Safari, Culture & Adventure Await</p>
+            <button class="btn btn-primary animate__animated animate__zoomIn" onclick="scrollToSection('packages')">
+                Explore Packages
+            </button>
+            <button class="btn btn-secondary animate__animated animate__zoomIn" onclick="scrollToSection('booking')">
+                Book Your Adventure
+            </button>
+        </div>
+    </section>
+
+    <!-- FEATURED EXPERIENCES SECTION -->
+    <section class="featured-experiences" id="experiences">
+        <div class="container">
+            <h2>Unforgettable Kenya Experiences</h2>
+            <div class="experiences-grid">
+                <div class="experience-card">
+                    <div class="experience-video">
+                        <img src="https://images.unsplash.com/photo-1516426122078-c23e76319801?w=500&h=350&fit=crop" alt="Great Migration">
+                        <div class="play-btn"><i class="fas fa-play"></i></div>
+                    </div>
+                    <h3><i class="fas fa-river"></i> The Great Migration</h3>
+                    <p>Witness one of nature's greatest spectacles - millions of wildebeest and zebras crossing the Mara River. A truly breathtaking moment in the Masai Mara National Reserve.</p>
+                </div>
+                <div class="experience-card">
+                    <div class="experience-video">
+                        <img src="https://images.unsplash.com/photo-1489749798305-4fea3ba63d60?w=500&h=350&fit=crop" alt="Mount Kenya">
+                        <div class="play-btn"><i class="fas fa-play"></i></div>
+                    </div>
+                    <h3><i class="fas fa-mountain"></i> Mount Kenya Trek</h3>
+                    <p>Scale Africa's second-highest peak and marvel at stunning vistas. Experience diverse ecosystems from tropical forests to alpine meadows at 5,199m.</p>
+                </div>
+                <div class="experience-card">
+                    <div class="experience-video">
+                        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&h=350&fit=crop" alt="Amboseli Sunrise">
+                        <div class="play-btn"><i class="fas fa-play"></i></div>
+                    </div>
+                    <h3><i class="fas fa-sun"></i> Sunrise Over Amboseli</h3>
+                    <p>Witness magical golden hour with views of Mount Kilimanjaro and thousands of elephants roaming freely. The most iconic Kenyan sunrise experience.</p>
+                </div>
+                <div class="experience-card">
+                    <div class="experience-video">
+                        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&h=350&fit=crop" alt="Hell's Gate">
+                        <div class="play-btn"><i class="fas fa-play"></i></div>
+                    </div>
+                    <h3><i class="fas fa-wind"></i> Hell's Gate Adventure</h3>
+                    <p>Hike through dramatic red cliffs, spot geothermal power, see geysers, and encounter wildlife in this unique gorge near Lake Naivasha.</p>
+                </div>
+                <div class="experience-card">
+                    <div class="experience-video">
+                        <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=500&h=350&fit=crop" alt="Rift Valley">
+                        <div class="play-btn"><i class="fas fa-play"></i></div>
+                    </div>
+                    <h3><i class="fas fa-water"></i> Lake Nakuru & Rift Valley</h3>
+                    <p>Explore the stunning soda lake famous for millions of pink flamingos, rhinos, and incredible birdwatching opportunities at 1,800m elevation.</p>
+                </div>
+                <div class="experience-card">
+                    <div class="experience-video">
+                        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&h=350&fit=crop" alt="Sunset">
+                        <div class="play-btn"><i class="fas fa-play"></i></div>
+                    </div>
+                    <h3><i class="fas fa-sunset"></i> Magical Sunsets</h3>
+                    <p>Experience breathtaking Kenyan sunsets with silhouettes of acacia trees, wildlife, and vast savannas painted in golden and crimson hues.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- KENYA DESTINATIONS SECTION -->
+    <section class="destinations" id="destinations">
+        <div class="container">
+            <h2>Iconic Kenya Destinations</h2>
+            <div class="destinations-grid">
+                <div class="destination-card">
+                    <img src="https://images.unsplash.com/photo-1516426122078-c23e76319801?w=500&h=400&fit=crop" alt="Masai Mara">
+                    <div class="destination-info">
+                        <h3>🦁 Masai Mara National Reserve</h3>
+                        <p>Home to the Big Five and the spectacular Great Migration. Vast plains, pristine wildlife, and authentic Maasai culture.</p>
+                        <span class="destination-highlight">Best for: Wildlife photography, Big Five viewing</span>
+                    </div>
+                </div>
+                <div class="destination-card">
+                    <img src="https://images.unsplash.com/photo-1489749798305-4fea3ba63d60?w=500&h=400&fit=crop" alt="Amboseli">
+                    <div class="destination-info">
+                        <h3>🐘 Amboseli National Park</h3>
+                        <p>Elephant capital of Kenya with stunning Kilimanjaro views. Unique ecosystem and incredible elephant herds roaming freely.</p>
+                        <span class="destination-highlight">Best for: Elephant encounters, photography</span>
+                    </div>
+                </div>
+                <div class="destination-card">
+                    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&h=400&fit=crop" alt="Tsavo">
+                    <div class="destination-info">
+                        <h3>🦓 Tsavo National Parks</h3>
+                        <p>Kenya's largest reserve - a vast wilderness with red volcanic soil, diverse wildlife, and raw African adventure.</p>
+                        <span class="destination-highlight">Best for: Adventure, untouched nature</span>
+                    </div>
+                </div>
+                <div class="destination-card">
+                    <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500&h=400&fit=crop" alt="Diani Beach">
+                    <div class="destination-info">
+                        <h3>🏖️ Diani Beach & Coast</h3>
+                        <p>Pristine white-sand beaches, turquoise waters, and tropical paradise. Perfect blend of safari and beach relaxation.</p>
+                        <span class="destination-highlight">Best for: Beach lovers, water sports</span>
+                    </div>
+                </div>
+                <div class="destination-card">
+                    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&h=400&fit=crop" alt="Lake Naivasha">
+                    <div class="destination-info">
+                        <h3>🦆 Lake Naivasha & Crater</h3>
+                        <p>Freshwater lake paradise with birdwatching, boat safaris, and Hell's Gate National Park nearby for adventure activities.</p>
+                        <span class="destination-highlight">Best for: Birdwatching, water activities</span>
+                    </div>
+                </div>
+                <div class="destination-card">
+                    <img src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=500&h=400&fit=crop" alt="Nairobi">
+                    <div class="destination-info">
+                        <h3>🏙️ Nairobi & Culture</h3>
+                        <p>Kenya's vibrant capital - museums, markets, giraffe centers, and urban exploration combined with rich heritage.</p>
+                        <span class="destination-highlight">Best for: Culture, urban safari</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- KENYAN CULTURE SECTION -->
+    <section class="kenyan-culture" id="culture">
+        <div class="container">
+            <h2>🌍 Immerse in Kenyan Culture</h2>
+            <div class="culture-grid">
+                <div class="culture-card">
+                    <div class="culture-icon">🔥</div>
+                    <h3>Maasai Traditions</h3>
+                    <p>Experience authentic Maasai warrior customs, traditional dances (jumping dance), beadwork, and pastoral lifestyle in their natural habitat.</p>
+                </div>
+                <div class="culture-card">
+                    <div class="culture-icon">🍲</div>
+                    <h3>Kenyan Cuisine</h3>
+                    <p><strong>Taste:</strong> Ugali, Nyama Choma (grilled meat), Sukuma Wiki, Mandazi, Chai. Fresh organic foods prepared traditional style.</p>
+                </div>
+                <div class="culture-card">
+                    <div class="culture-icon">🎭</div>
+                    <h3>Tribal Customs</h3>
+                    <p>Meet diverse tribes: Kikuyu, Samburu, Turkana, Luhya. Each with unique languages, crafts, ceremonies, and storytelling traditions.</p>
+                </div>
+                <div class="culture-card">
+                    <div class="culture-icon">🎨</div>
+                    <h3>Local Crafts</h3>
+                    <p>Shop authentic beadwork, wooden carvings, textiles, and jewelry directly from artisans. Each piece tells a story of Kenyan heritage.</p>
+                </div>
+                <div class="culture-card">
+                    <div class="culture-icon">🥁</div>
+                    <h3>Music & Dance</h3>
+                    <p>Experience rhythmic traditional dances, tribal drums, and modern Kenyan music. Participate in cultural performances and celebrations.</p>
+                </div>
+                <div class="culture-card">
+                    <div class="culture-icon">🏘️</div>
+                    <h3>Village Life</h3>
+                    <p>Stay in authentic Maasai villages, learn daily routines, participate in activities, and build genuine connections with local communities.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SERVICES OVERVIEW -->
+    <section class="services">
+        <div class="container">
+            <h2>Why Choose Safaris Best Choice?</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-map-location-dot"></i>
+                    </div>
+                    <h3>Nationwide Pickups</h3>
+                    <p>We pick you up from Nairobi, Mombasa, Kisumu, Nakuru, and all major cities across Kenya.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-binoculars"></i>
+                    </div>
+                    <h3>Premium Game Reserves</h3>
+                    <p>Access to all of Kenya's top reserves: Masai Mara, Amboseli, Tsavo, with expert naturalist guides.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Expert Local Guides</h3>
+                    <p>Licensed naturalists who know Kenya like the back of their hand - incredible storytellers and wildlife experts.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <h3>Authentic Kenyan Meals</h3>
+                    <p>Enjoy traditional Kenyan cuisine - Nyama Choma, Ugali, Sukuma Wiki - prepared with fresh local ingredients.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <h3>Photography Opportunities</h3>
+                    <p>Capture the best moments: wildlife, sunrises, sunsets, and cultural experiences with professional guidance.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3>Cultural Immersion</h3>
+                    <p>Connect with Maasai and other tribes, learn traditions, participate in ceremonies, and support local communities.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PACKAGES SECTION -->
+    <section class="packages" id="packages">
+        <div class="container">
+            <h2>Safari Packages for Everyone</h2>
+            <div class="filter-buttons">
+                <button class="filter-btn active" onclick="filterPackages('all')">All</button>
+                <button class="filter-btn" onclick="filterPackages('family')">Family</button>
+                <button class="filter-btn" onclick="filterPackages('adventure')">Adventure</button>
+                <button class="filter-btn" onclick="filterPackages('photography')">Photography</button>
+                <button class="filter-btn" onclick="filterPackages('luxury')">Luxury</button>
+                <button class="filter-btn" onclick="filterPackages('cultural')">Cultural</button>
+            </div>
+
+            <div class="packages-grid" id="packagesGrid">
+                <!-- Packages will be inserted by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- BOOKING SECTION -->
+    <section class="booking-section" id="booking">
+        <div class="container">
+            <h2>Book Your Kenya Safari Adventure</h2>
+            <div class="booking-container">
+                <form class="booking-form" id="bookingForm" onsubmit="submitBooking(event)">
+                    <div class="form-group">
+                        <label for="packageSelect">Select Package:</label>
+                        <select id="packageSelect" required onchange="updatePackagePrice()">
+                            <option value="">-- Choose a Package --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="startDate">Start Date:</label>
+                        <input type="date" id="startDate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="endDate">End Date:</label>
+                        <input type="date" id="endDate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="numTourists">Number of Tourists:</label>
+                        <input type="number" id="numTourists" min="1" value="1" required onchange="updatePackagePrice()">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pickupCity">Pickup City:</label>
+                        <select id="pickupCity" required>
+                            <option value="">-- Select City --</option>
+                            <option value="nairobi">Nairobi (Capital)</option>
+                            <option value="mombasa">Mombasa (Coastal)</option>
+                            <option value="kisumu">Kisumu (Lake City)</option>
+                            <option value="nakuru">Nakuru (Rift Valley)</option>
+                            <option value="kericho">Kericho (Tea Country)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="visitType">Visit Type:</label>
+                        <select id="visitType" required>
+                            <option value="">-- Select Type --</option>
+                            <option value="local">Local Resident</option>
+                            <option value="international">International Visitor</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="hotelPickup">
+                            <input type="checkbox" id="hotelPickup"> Add Hotel Pickup/Drop-off (+$50)
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Extras & Add-ons:</label>
+                        <div class="extras-options">
+                            <label><input type="checkbox" name="extras" value="photography"> Professional Photography Guide (+$80)</label>
+                            <label><input type="checkbox" name="extras" value="gourmet"> Gourmet Kenyan Meals (+$120)</label>
+                            <label><input type="checkbox" name="extras" value="cultural"> Cultural Village Visit (+$100)</label>
+                            <label><input type="checkbox" name="extras" value="night"> Night Game Drive (+$150)</label>
+                            <label><input type="checkbox" name="extras" value="massage"> Spa & Massage (+$90)</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fullName">Full Name:</label>
+                        <input type="text" id="fullName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone Number:</label>
+                        <input type="tel" id="phone" required>
+                    </div>
+
+                    <div class="price-summary">
+                        <h3>💰 Price Summary</h3>
+                        <p>Package: <span id="packagePrice">$0</span></p>
+                        <p>Extras: <span id="extrasPrice">$0</span></p>
+                        <p>Hotel Pickup: <span id="hotelPrice">$0</span></p>
+                        <p><strong>Total: <span id="totalPrice">$0</span></strong></p>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Proceed to Payment</button>
+                </form>
+
+                <div class="booking-info">
+                    <h3>✨ Booking Information</h3>
+                    <p><i class="fas fa-shield"></i> <strong>Secure Payment</strong> - All transactions encrypted via Stripe, PayPal & M-Pesa</p>
+                    <p><i class="fas fa-check-circle"></i> <strong>Instant Confirmation</strong> - Email confirmation with full itinerary</p>
+                    <p><i class="fas fa-phone"></i> <strong>24/7 Support</strong> - Local team always ready to help in multiple languages</p>
+                    <p><i class="fas fa-undo"></i> <strong>Free Cancellation</strong> - Up to 7 days before your safari</p>
+                    <p><i class="fas fa-certificate"></i> <strong>Licensed & Certified</strong> - Kenya Tourism Board Registered Operator</p>
+                    <p><i class="fas fa-leaf"></i> <strong>Eco-Friendly</strong> - Sustainable tourism practices & wildlife conservation</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GALLERY SECTION -->
+    <section class="gallery" id="gallery">
+        <div class="container">
+            <h2>Kenya Safari Gallery - Visual Stories</h2>
+            <div class="gallery-grid" id="galleryGrid">
+                <!-- Gallery items will be inserted by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- REVIEWS SECTION -->
+    <section class="reviews" id="reviews">
+        <div class="container">
+            <h2>Unforgettable Stories from Our Guests</h2>
+            <div class="reviews-grid" id="reviewsGrid">
+                <!-- Reviews will be inserted by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT SECTION -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <h2>Get In Touch With Us</h2>
+            <div class="contact-container">
+                <div class="contact-form">
+                    <form id="contactForm" onsubmit="submitContact(event)">
+                        <div class="form-group">
+                            <input type="text" placeholder="Your Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" placeholder="Your Email" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" placeholder="Subject" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea placeholder="Your Message" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                    </form>
+                </div>
+
+                <div class="contact-info">
+                    <h3>📍 Contact Information</h3>
+                    <p><i class="fas fa-phone"></i> <strong>+254 712 345 678</strong></p>
+                    <p><i class="fas fa-phone"></i> <strong>+254 20 2 700 900</strong></p>
+                    <p><i class="fas fa-envelope"></i> info@safarisbestchoice.co.ke</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Nairobi, Kenya (HQ)</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Offices in Masai Mara, Amboseli, Mombasa</p>
+                    
+                    <h3>🌐 Follow Us on Social</h3>
+                    <div class="social-links">
+                        <a href="#" title="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+                        <a href="#" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                    </div>
+
+                    <h3>🛡️ Trust & Certifications</h3>
+                    <p>✓ Kenya Tourism Board Licensed</p>
+                    <p>✓ Member of Kenya Tourism Alliance</p>
+                    <p>✓ Eco-Tourism Certified</p>
+                    <p>✓ Wildlife Conservation Partner</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ACCOUNT MODAL -->
+    <div class="modal" id="accountModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>My Safari Account</h2>
+            <div class="account-tabs">
+                <button class="tab-btn active" onclick="switchTab('login')">Login</button>
+                <button class="tab-btn" onclick="switchTab('register')">Register</button>
+            </div>
+
+            <div id="loginTab" class="tab-content active">
+                <form onsubmit="submitLogin(event)">
+                    <div class="form-group">
+                        <input type="email" placeholder="Email Address" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+            </div>
+
+            <div id="registerTab" class="tab-content">
+                <form onsubmit="submitRegister(event)">
+                    <div class="form-group">
+                        <input type="text" placeholder="Full Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" placeholder="Email Address" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" placeholder="Phone Number (Optional)">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" placeholder="Password (min 6 characters)" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" placeholder="Confirm Password" required>
+                    </div>
+                    <label><input type="checkbox" required> I agree to Terms & Conditions</label>
+                    <button type="submit" class="btn btn-primary">Create Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>🦁 About Safaris Best Choice</h3>
+                    <p>Kenya's leading safari operator offering authentic wildlife experiences, cultural immersion, and unforgettable adventures across East Africa's most beautiful reserves.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>🗺️ Quick Links</h3>
+                    <ul>
+                        <li><a href="#packages">Safari Packages</a></li>
+                        <li><a href="#destinations">Destinations</a></li>
+                        <li><a href="#culture">Kenya Culture</a></li>
+                        <li><a href="#booking">Book Now</a></li>
+                        <li><a href="#contact">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>💳 Payment Methods</h3>
+                    <p><i class="fab fa-cc-stripe"></i> Stripe</p>
+                    <p><i class="fab fa-paypal"></i> PayPal</p>
+                    <p><i class="fas fa-mobile-alt"></i> M-Pesa (Kenya)</p>
+                    <p><i class="fas fa-credit-card"></i> Bank Transfer</p>
+                </div>
+                <div class="footer-section">
+                    <h3>⏰ Operating Hours</h3>
+                    <p>Monday - Friday: 7:00 AM - 8:00 PM (EAT)</p>
+                    <p>Saturday - Sunday: 8:00 AM - 10:00 PM (EAT)</p>
+                    <p>Available 24/7 for emergencies</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Safaris Best Choice Kenya. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms & Conditions</a></p>
+                <p>Celebrating Kenya's natural heritage and supporting local communities 🌍</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="assets/js/script.js"></script>
+</body>
+</html>
